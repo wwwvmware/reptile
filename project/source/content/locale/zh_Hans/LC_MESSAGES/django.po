@@ -224,3 +224,9 @@ msgstr "你的用户名是"
 
 msgid "You are a guest."
 msgstr "你目前的身份是访客。"
+
+msgid "Start reptile"
+msgstr "开启爬虫"
+
+msgid "Cancel"
+msgstr "取消"

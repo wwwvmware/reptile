@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import (
-    LogInView, ResendActivationCodeView, RemindUsernameView, SignUpView, ActivateView, LogOutView,
+    LogInView, ResendActivationCodeView, RemindUsernameView, SignUpView, ActivateView, LogOutView,SearchView,
     ChangeEmailView, ChangeEmailActivateView, ChangeProfileView, ChangePasswordView,
     RestorePasswordView, RestorePasswordDoneView, RestorePasswordConfirmView,
 )
@@ -15,6 +15,7 @@ urlpatterns = [
     path('resend/activation-code/', ResendActivationCodeView.as_view(), name='resend_activation_code'),
 
     path('sign-up/', SignUpView.as_view(), name='sign_up'),
+    path('search/', SearchView.as_view(), name='search'),
     path('activate/<code>/', ActivateView.as_view(), name='activate'),
 
     path('restore/password/', RestorePasswordView.as_view(), name='restore_password'),

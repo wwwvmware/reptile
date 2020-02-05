@@ -72,14 +72,15 @@ DEFAULT_FROM_EMAIL = 'test@example.com'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql.connector.django',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'lr_project',
         'USER': 'root',
         'PASSWORD':'123456',
-        'HOST':'0.0.0.0',
+        'HOST':'172.22.190.193',
         'PORT':'3306'
     }
 }
+
 
 
 AUTH_PASSWORD_VALIDATORS = [

@@ -1,0 +1,26 @@
+{% extends 'layouts/default/page.html' %}
+
+{% load bootstrap4 %}
+{% load i18n %}
+
+{% block content %}
+
+    <h4>{% trans 'Start reptile' %}</h4>
+
+    <form method="get" action="{% url 'accounts:search' %}">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="text" {{ disabled }}="{{ disabled }}" name="SearchKey" value="{{ searchKey }}" class="form-control" placeholder="{% trans 'Input the search key' %}" required  />
+            <span class="input-group-btn">
+                <input type="submit"  class="btn btn-default submitSearchKey" value="{% trans 'Search' %}" />
+                <input type="button" class="btn btn-default" value="{% trans 'Cancel' %}" />
+            </span>
+        </div>
+    </form>
+    <!-- <script type="text/javascript">
+        var target = document.getElementsByClassName('submitSearchKey')[0]
+        target.onclick=function(){
+            console.log("hello world")
+        }
+    </script> -->
+{% endblock %}

@@ -6,6 +6,8 @@ from django.contrib.auth.views import (
     LogoutView as BaseLogoutView, PasswordChangeView as BasePasswordChangeView,
     PasswordResetDoneView as BasePasswordResetDoneView, PasswordResetConfirmView as BasePasswordResetConfirmView,
 )
+
+from django.views.generic.base import TemplateView
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
@@ -38,6 +40,23 @@ class GuestOnlyView(View):
 
         return super().dispatch(request, *args, **kwargs)
 
+class SearchView(LoginRequiredMixin,TemplateView):
+    template_name = 'accounts/search.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request = self.request
+        searchKey = request.GET.get('SearchKey')
+        print(request.GET.get('SearchKey'))
+        if bool(searchKey and searchKey.strip()):
+            print(1)
+            context['disabled']="disabled"
+            context['searchKey']=request.GET.get('SearchKey')
+        else:
+            print(2)
+            context['disabled']=" "
+        
+        return context
 
 class LogInView(GuestOnlyView, FormView):
     template_name = 'accounts/log_in.html'
