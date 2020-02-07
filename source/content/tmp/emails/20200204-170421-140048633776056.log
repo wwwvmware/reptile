@@ -1,0 +1,53 @@
+Content-Type: multipart/alternative;
+ boundary="===============5670362986136722457=="
+MIME-Version: 1.0
+Subject: =?utf-8?b?5L+u5pS555S15a2Q6YKu566x?=
+From: test@example.com
+To: changyu@test.com
+Date: Tue, 04 Feb 2020 17:04:21 -0000
+Message-ID: <158083586129.850.17737668606562068233@81434e84082b>
+
+--===============5670362986136722457==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+
+
+要更改您当前的电子邮件地址，请点击以下链接：
+
+http://172.30.31.35:8000/accounts/change/email/B2RGqmbnggT9R6RCB1pw/
+
+--===============5670362986136722457==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>修改电子邮箱</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+
+<body>
+
+<p>
+    要更改您当前的电子邮件地址，请点击以下链接：
+</p>
+
+<p>
+    <a href="http://172.30.31.35:8000/accounts/change/email/B2RGqmbnggT9R6RCB1pw/">http://172.30.31.35:8000/accounts/change/email/B2RGqmbnggT9R6RCB1pw/</a>
+</p>
+
+</body>
+
+</html>
+
+--===============5670362986136722457==--
+
+-------------------------------------------------------------------------------

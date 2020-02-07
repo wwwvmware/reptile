@@ -1,0 +1,46 @@
+{% extends 'layouts/default/page.html' %}
+
+{% load bootstrap4 %}
+{% load i18n %}
+
+
+{% load render_table from django_tables2 %}
+
+{% block content %}
+
+<h1>{{ paginator.count  }} Results of '{{ searchKey }}'</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>iD</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Url</th>
+            <th>SourceWebSite</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cours in page_obj %}
+        <tr>
+                    <td>{{ cours.id }}</td>
+                    <td>{{ cours.name }}</td>
+                    <td>{{ cours.price }}</td>
+                    <td ><a target="_blank" href="{{ cours.url }}">{{ cours.url }}</a></td>
+                    <td>{{ cours.source_website}}</td>
+        {% endfor %}
+        </tr>
+    </tbody>
+</table>
+{% if is_paginated %}
+<ul class="pagination">
+         {% for i in pages %}
+            {% if i == pageIndex %}
+            <li class="page-item active"><span class="page-link" href="{{ request.path }}?page={{ i }}"> {{ i }}<span class="sr-only">(current)</span></span></li>
+            {% else %}
+            <li class="page-item"><a class="page-link"  href="{{ request.path }}?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+         {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}

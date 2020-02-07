@@ -1,0 +1,19 @@
+{% extends 'layouts/default/page.html' %}
+
+{% load bootstrap4 %}
+{% load i18n %}
+{% block content %}
+
+    <h4>{% trans 'Start reptile' %}</h4>
+
+    <form method="post" action="{% url 'accounts:search' %}">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="text" name="Key" class="form-control" placeholder="{% trans 'Input the search key' %}" required  />
+            <span class="input-group-btn">
+                <input type="submit"  class="btn btn-default submitSearchKey" value="{% trans 'Search' %}" />
+                <input type="button" class="btn btn-default" value="{% trans 'Cancel' %}" />
+            </span>
+        </div>
+    </form>
+{% endblock %}
