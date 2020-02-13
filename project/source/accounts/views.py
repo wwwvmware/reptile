@@ -6,11 +6,14 @@ from django.contrib.auth.views import (
     LogoutView as BaseLogoutView, PasswordChangeView as BasePasswordChangeView,
     PasswordResetDoneView as BasePasswordResetDoneView, PasswordResetConfirmView as BasePasswordResetConfirmView,
 )
-
+import random
+from django.db.models import Q
 from django.views.generic.base import TemplateView
+from django.views.generic import ListView
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
+from django.shortcuts import render
 from django.utils.http import is_safe_url
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -20,17 +23,22 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import View, FormView
 from django.conf import settings
+from pyecharts.charts import Bar,Polar
+from pyecharts import options as opts
+from django_echarts.views.backend import EChartsBackendView
+from django.http import HttpResponse
 
 from .utils import (
-    send_activation_email, send_reset_password_email, send_forgotten_username_email, send_activation_change_email,
+    send_activation_change_email,get_data_by_searchKey,getpages,
 )
 from .forms import (
     SignInViaUsernameForm, SignInViaEmailForm, SignInViaEmailOrUsernameForm, SignUpForm,
     RestorePasswordForm, RestorePasswordViaEmailOrUsernameForm, RemindUsernameForm,
-    ResendActivationCodeForm, ResendActivationCodeViaEmailForm, ChangeProfileForm, ChangeEmailForm,
+    ResendActivationCodeForm, ResendActivationCodeViaEmailForm, ChangeProfileForm, ChangeEmailForm,SearchKeyForm,DataTable,DataFilter,
 )
-from .models import Activation
-
+from .models import(
+     Activation,DataInfo
+)
 
 class GuestOnlyView(View):
     def dispatch(self, request, *args, **kwargs):
@@ -40,23 +48,68 @@ class GuestOnlyView(View):
 
         return super().dispatch(request, *args, **kwargs)
 
-class SearchView(LoginRequiredMixin,TemplateView):
-    template_name = 'accounts/search.html'
+def get_instance(request):
+    # bar = Bar()
+    # bar.add_xaxis(["A", "B", "C", "D", "E", "F"])
+    # bar.add_yaxis("G", [5, 20, 36, 10, 75, 90])
+    # bar.render()
+    bar = (
+        Polar()
+        .add("", [(10, random.randint(1, 100)) for i in range(300)], type_="scatter")
+        .add("", [(11, random.randint(1, 100)) for i in range(300)], type_="scatter")
+        .set_series_opts(label_opts=opts.LabelOpts(is_show=False))
+        .set_global_opts(title_opts=opts.TitleOpts(title="Polar-Scatter1"))
+    )
+    return HttpResponse(bar.render_embed())
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+class ShowCharts(EChartsBackendView):
+    template_name='accounts/charts.html'
+    def get_echarts_instance(self, *args, **kwargs):
+        bar = Bar()
+        bar.add_xaxis(["A", "B", "C", "D", "E", "F"])
+        bar.add_yaxis("G", [5, 20, 36, 10, 75, 90])
+        bar.render()
+
+class ResultView(LoginRequiredMixin,ListView):
+    model = DataInfo
+    table_calss = DataTable
+    paginate_by = 10
+    context_object_name = 'page_obj'
+    template_name = 'accounts/result.html'
+    def get_queryset(self):
         request = self.request
-        searchKey = request.GET.get('SearchKey')
-        print(request.GET.get('SearchKey'))
-        if bool(searchKey and searchKey.strip()):
-            print(1)
-            context['disabled']="disabled"
-            context['searchKey']=request.GET.get('SearchKey')
-        else:
-            print(2)
-            context['disabled']=" "
-        
+        request.session['currentPage'] = self.request.GET.get('page', 1)
+        queryset = DataInfo.objects.filter(
+            Q(userid= request.session['userid']) 
+        )
+        return  queryset
+    def get_context_data(self,**kargs):
+        request = self.request
+        context = super().get_context_data(**kargs)
+        page = context.get('page_obj')
+        context['searchKey']= request.session['searchKey']
+        context['pageIndex']= int(request.session['currentPage'])
+        pages = getpages(context['paginator'].num_pages,request.session['currentPage'])
+        context['pages'] = pages
         return context
+
+class SearchView(LoginRequiredMixin,FormView):
+    template_name='accounts/search.html'
+    form_class = SearchKeyForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        request = self.request
+        searchKey = form.cleaned_data['Key']
+        userid = request.user.id
+        request.session['userid']= userid
+        request.session['searchKey'] = searchKey
+        table=get_data_by_searchKey(userid,searchKey)
+        return redirect('accounts:result')
 
 class LogInView(GuestOnlyView, FormView):
     template_name = 'accounts/log_in.html'
@@ -345,3 +398,33 @@ class RestorePasswordDoneView(BasePasswordResetDoneView):
 
 class LogOutView(LoginRequiredMixin, BaseLogoutView):
     template_name = 'accounts/log_out.html'
+# class SearchView(LoginRequiredMixin,ListView):
+#     model = DataInfo
+#     table_calss = DataTable
+#     template_name = 'accounts/search.html'
+#     def get_context_data(self, **kwargs):
+#         print("hello world")
+#         context = super().get_context_data(**kwargs)
+#         request = self.request
+#         searchKey = request.GET.get('Key')
+#         print(request.user.id,searchKey)
+#         if bool(searchKey and searchKey.strip()):
+#             context['disabled']="disabled"
+#             context['show'] = True
+#             context['searchKey']=searchKey
+#             context['table']=get_data_by_searchKey(request.user.id,searchKey)
+#         else:
+#             context['show'] = False
+#             context['disabled']=" "
+
+        
+#         render(request,'accounts/search.html',{'table':table})
+#         return context
+
+# def get_result(request):
+#     print(request)
+#     searchKey =  request.session['searchKey']
+#     userid =  request.session['userid']
+#     print(searchKey,userid)
+#     table=get_data_by_searchKey(request.user.id,searchKey)
+#     return render(request,'accounts/result.html',{'table':table})

@@ -8,12 +8,35 @@ from django.contrib.auth.forms import UserCreationForm
 from django.utils import timezone
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
-
+import django_tables2 as tables
+import django_filters
+from .models import DataInfo
 
 class UserCacheMixin:
     user_cache = None
 
+class SearchKeyForm(forms.Form):
+    Key = forms.CharField(label=_('KeyWrod'),max_length=30, required=False)
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
 
+class DataFilter(django_filters.FilterSet):
+    class Meta:
+        model = DataInfo
+        fields = {
+            'price': ['lt', 'gt'],
+        }
+
+
+class DataTable(tables.Table):
+    name = forms.CharField(label=_('Name'))
+    price = forms.FloatField(label=_('Name'))
+    url = forms.CharField(label=_('Name'))
+    id = forms.IntegerField(label=_('Name'))
+    class Meta:
+        model = DataInfo
+        template_name='templates/search.html'
 class SignIn(UserCacheMixin, forms.Form):
     password = forms.CharField(label=_('Password'), strip=False, widget=forms.PasswordInput)
 

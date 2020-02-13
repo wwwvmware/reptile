@@ -23,6 +23,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django_tables2',
+    'django_filters',
+    'django_echarts',
 
     # Vendor apps
     'bootstrap4',
@@ -31,6 +34,11 @@ INSTALLED_APPS = [
     'main',
     'accounts',
 ]
+
+DJANGO_ECHARTS = {
+    'echarts_version': '4.0.4',
+    'lib_js_host':'cdnjs'
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,9 +66,14 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
         },
     },
+]
+
+TEMPLATE_LOADERS = [
+    'django.template.loaders.eggs.Loader',
 ]
 
 WSGI_APPLICATION = 'app.wsgi.application'
@@ -76,7 +89,7 @@ DATABASES = {
         'NAME': 'lr_project',
         'USER': 'root',
         'PASSWORD':'123456',
-        'HOST':'172.22.190.193',
+        'HOST':'172.23.43.6',
         'PORT':'3306'
     }
 }
